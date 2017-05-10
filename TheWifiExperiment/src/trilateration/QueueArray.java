@@ -1,6 +1,6 @@
 package trilateration;
 
-
+// just a queue array not at all necessary
 public class QueueArray implements QueueIntf {
 	public static final int CAPACITY=100;
 	private int[] data;

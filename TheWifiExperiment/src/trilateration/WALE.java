@@ -8,7 +8,7 @@ public class WALE extends Circle{
 										//dont want you right now !! sorry :(
 	}
 	 									//factor by which the radius is varied
-	final static float beta=(float) 0.001;
+	final static float beta=(float) 0.1;
 										//area required for over estimation rule 2;
 	final static float delta=3;
 	 
@@ -43,7 +43,7 @@ public class WALE extends Circle{
 				}
 				else{
 					//infinite loop termination point
-					continue;
+break;
 				}
 			}
 		}
@@ -71,7 +71,7 @@ public class WALE extends Circle{
 				if((C[0].areaInter(C[1])>C[0].delta(C[1]) || C[0].areaInter(C[2])>C[0].delta(C[2]) || C[1].areaInter(C[2])>C[1].delta(C[2]) ) && !(!C[0].overlaps(C[1])||!C[0].overlaps(C[2])||!C[1].overlaps(C[2])) ){
 				// this and underestimation is false then overestimation 2 is true
 					//as its in else case its shouldv'e already been covered
-					//but as the radius is dynamically reduced it needs to be checked again
+						//but as the radius is dynamically reduced it needs to be checked again
 					
 					while((C[0].areaInter(C[1])>C[0].delta(C[1]) || C[0].areaInter(C[2])>C[0].delta(C[2]) || C[1].areaInter(C[2])>C[1].delta(C[2]) ) && !(!C[0].overlaps(C[1])||!C[0].overlaps(C[2])||!C[1].overlaps(C[2])) ){
 					
@@ -84,7 +84,7 @@ public class WALE extends Circle{
 			}
 			
 				//*********Location estimation**********
-	
+	System.out.println("done dce");
 			float  W[] = new float[100] ;
 			
 			for(int i=0;i<3;i++){
@@ -93,6 +93,8 @@ public class WALE extends Circle{
 				
 				for(int k=0;k<C[i].R1;k++){
 					W[k]=(float) ((1/C[i].R)*(Math.exp(k/C[i].R)));
+					System.out.println(W[k]);
+
 				//for every point "j" on the varying circumference of radius "k"
 					  float x_co=(float) (C[i].X+k*Math.cos(t*3.14/180));
 					  	float y_co=(float) (C[i].Y+k*Math.sin(t*3.14/180));
@@ -113,6 +115,10 @@ public class WALE extends Circle{
 						  j.weight=W[k];
 					  }
 				}
+				for(float s:W){
+					System.out.println(s);
+				}
+				
 			}
 		}		
 		

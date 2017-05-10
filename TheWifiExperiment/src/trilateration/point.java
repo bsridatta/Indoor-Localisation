@@ -10,7 +10,7 @@ public class point {
 	 public boolean isTrilaterable(){
 			
 			
-			return false;
+			return true;
 			
 		}
 
