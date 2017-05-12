@@ -10,12 +10,12 @@ public class Circle  {
 	public float X;	//corresponding x-co of center
 	public float Y;	//corresponding y-co of center
 
-	public Circle(int x, int y, int r) {
+	public Circle(int x, int y, float radius) {
 		// TODO Auto-generated constructor stub
 		X=x;
 		Y=y;
-		R=r;
-		R1=r;
+		R=radius;
+		R1=radius;
 	}
 			
 			//Assuming filled circle intersection 

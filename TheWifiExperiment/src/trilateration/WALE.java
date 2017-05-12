@@ -1,17 +1,20 @@
 package trilateration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class WALE extends Circle{
-
-
+	
 	 public WALE(int x, int y, int r) {
 		super(x, y, r);
 										//dont want you right now !! sorry :(
 	}
 	 									 //factor by which the radius is varied
-	 static	float [] beta= new float [3];
-										//area required for over estimation rule 2;
-	final static float delta=3;
-	 
+	static	float [] beta= new float [3];
 									// C is an array of circles 
 									//obtained from available router RSSIs
 									//array of circles in decreasing order of radius
@@ -52,9 +55,45 @@ public class WALE extends Circle{
 	/*************************************************************************
 								THE MAIN FUNCTION
 		*************************************************************************/
+	
 	public static void main(String [] args){
+		
+		//get the 3 best circles in decreasing order of radius
+		//pass array of their router numbers and distances
+		int [] routerNumber={1,2,3};
+		float [] radius = {10,11,21};
+		//retrieving info from config file
+		try {
+		    Properties props = new Properties();
+		    InputStream configFile=WALE.class.getClassLoader().getResourceAsStream("config.properties");		 
+		    props.load(configFile);
+
+		    String host = props.getProperty("host");
+		    System.out.print("Host name is: " + host+"\n");
+		    
+		    //for each router
+		    for(int i=0;i<3;i++){
+		    String input="router"+routerNumber[i];
+		    String routerLocation = props.getProperty(input);
+		    String [] routerCenter=routerLocation.split(",");
+		    System.out.print("router"+routerNumber[i]+" location in x:" + routerCenter[0]+" in y:" + routerCenter[1]+"\n");
+			C[i]=new Circle(Integer.valueOf(routerCenter[0]),Integer.valueOf(routerCenter[1]),radius[i]);
+			//one circle created
+		    }
 			
-		C[0]=new Circle(100,100,20);
+			
+			
+			
+		    configFile.close();
+		} catch (FileNotFoundException ex) {
+		    // file does not exist
+		} catch (IOException ex) {
+		    // I/O error
+		}
+		
+		
+		
+			
 		C[1]=new Circle(200,200,40);
 		C[2]=new Circle(150,150,30);
 		
@@ -104,7 +143,7 @@ public class WALE extends Circle{
 		/*************************************************************************
 								Location estimation
 		*************************************************************************/
-		float  W[] = new float[100] ;
+		float  W[] = new float[360] ;
 			
 		for(int i=0;i<3;i++){
 				
