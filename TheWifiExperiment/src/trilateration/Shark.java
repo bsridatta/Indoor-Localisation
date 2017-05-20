@@ -7,22 +7,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class WALE extends Circle{
+public class Shark extends Circle{
 	
-	 public WALE(int x, int y, int r) {
-		super(x, y, r);
-										//dont want you right now !! sorry :(
+	public Shark(int x, int y, int r) {
+		 super(x, y, r);				//dont want you right now !! sorry :(
 	}
-	 									 //factor by which the radius is varied
+	 
+	 								//factor by which the radius is varied
 	static	float [] beta= new float [3];
 									// C is an array of circles 
 									//obtained from available router RSSIs
 									//array of circles in decreasing order of radius
 	static Circle C[]=new Circle[3];
-	/*************************************************************************
-					cyclic  circle increasing function
-		*************************************************************************/
+		/*************************************************************************
+					is in a triangle function
+ 		*************************************************************************/
+	
+	public static boolean isTrilaterable(float x, float y){
+
+		//formula to calculate area of triangle : double ABC = Math.abs (C[0].X * (C[1].Y - C[2].Y) + C[1].X * (C[2].Y - C[0].Y) + C[2].X * (C[0].Y - C[1].Y)) / 2;
+		// no need to divide by 2.0 here, since it is not necessary in the equation
+		double ABC = Math.abs (C[0].X * (C[1].Y - C[2].Y) + C[1].X * (C[2].Y - C[0].Y) + C[2].X * (C[0].Y - C[1].Y)) ;
+		double ABP = Math.abs (C[0].X * (C[1].Y - y) + C[1].X * (y - C[0].Y) + x * (C[0].Y - C[1].Y));
+		double APC = Math.abs (C[0].X * (y - C[2].Y) + x * (C[2].Y - C[0].Y) + C[2].X * (C[0].Y - y));
+		double PBC = Math.abs (x * (C[1].Y - C[2].Y) + C[1].X * (C[2].Y- y) + C[2].X * (y - C[1].Y));
+
+		boolean isInTriangle = ABP + APC + PBC == ABC;
 		
+		return isInTriangle;
+		
+	}
+		/*************************************************************************
+					cyclic  circle increasing function
+ 		*************************************************************************/
+
 	public static void CircleIncrease(){
 		//Q is a queue to temporarily save circles for cyclic order
 		//say 3 circles
@@ -54,14 +72,14 @@ public class WALE extends Circle{
 
 	/*************************************************************************
 								THE MAIN FUNCTION
-		*************************************************************************/
+	*************************************************************************/
 	
 	public static void main(String [] args){
 		
 		//get the 3 best circles in decreasing order of radius
 		//pass array of their router numbers and distances
 		int [] routerNumber={1,2,3};
-		float [] radius = {10,11,21};
+		float [] radius = {10,10,10};
 		//retrieving info from config file
 		try {
 		    Properties props = new Properties();
@@ -142,16 +160,20 @@ public class WALE extends Circle{
 		/*************************************************************************
 								Location estimation
 		*************************************************************************/
-		float  W[] = new float[360] ;
-			
+		float  W[] = new float[1000000] ;
+
+		float xWeight=0;
+		float yWeight=0;
+		float tWeight=0;
+
 		for(int i=0;i<3;i++){
 			
 			System.out.println("****circle "+i+"****\n");
-			
+		
 			//for each circle
 			for(int k=0;k<C[i].R1;k++){
 				
-				System.out.println("****layer "+k+"****\n");
+				//System.out.println("****layer "+k+"****\n");
 				
 				//for each layer of circle
 				W[k]=(float) ((1/C[i].R)*(Math.exp(k/C[i].R)));//weight for layer points
@@ -160,8 +182,7 @@ public class WALE extends Circle{
 				//for every point "j" on the varying circumference of radius "k"
 				//360 points on each layer
 				
-				point  j[] =new point[360];
-				
+																																//point  j[] =new point[360]; 
 				int t=0;
 				for( t=0;t<=360;t++){
 					float x_co=(float) (C[i].X+k*Math.cos(t*3.14/180));
@@ -169,35 +190,58 @@ public class WALE extends Circle{
 			
 					//initial weight is equal to layer's weight
 					// point on the varying k
-					j[t].x=x_co;
-					j[t].y=y_co;
-					j[t].weight=W[k];
+																																//j[t].x=x_co;
+																																//j[t].y=y_co;
+					tWeight+=W[k];		//total weight denominator in finding the mean position	
+					xWeight+=W[k]*x_co;	//for weighted mean along x
+					yWeight+=W[k]*y_co;	//for weighted mean along y
+					
+																																//j[t].weight=W[k];
+					
 					//check if it lies inside other circles
 					if(C[(i+1)%3].hasPoint(x_co, y_co)||C[(i+2)%3].hasPoint(x_co, y_co)){
-						if(j[t].isTrilaterable()){// checking if the point is trilaterable
-							j[t].weight=j[t].weight+W[k];
+						if(isTrilaterable(x_co, y_co)){// checking if the point is trilaterable
+																																//if(j[t].isTrilaterable()){// checking if the point is trilaterable
+																																//j[t].weight=j[t].weight+W[k];
+							tWeight+=W[k];		//total weight denominator in finding the mean position	
+							xWeight+=W[k]*x_co;	//for weighted mean along x
+							yWeight+=W[k]*y_co;	//for weighted mean along y	
 						}
 						else{
-							j[t].weight=Math.abs(j[t].weight-W[k]);
+								//j[t].weight=Math.abs(j[t].weight-W[k]);
+//didnt understand the reason for taking absolute value
+							tWeight-=W[k];		//total weight denominator in finding the mean position	
+							xWeight-=W[k]*x_co;	//for weighted mean along x
+							yWeight-=W[k]*y_co;	//for weighted mean along y	
+						
 						}
 					}
 					else{
-						j[t].weight=W[k];
+						//j[t].weight=W[k];
 					}
 				}
 				//print all the weights of all points on all layers
-				for(point p:j){
-					System.out.println(p.weight);
-				}
-						
+				//for(point p:j){
+					//System.out.println(p.weight);
+				//}
+				
 				
 			}
 			
-			for(float s:W){
-				System.out.println(s);
-			}
+			//for(float s:W){
+				//System.out.println(s);
+			//}
 				
 		}
+		float finalx=xWeight/tWeight;
+		float finaly=yWeight/tWeight;
+		
+		
+		System.out.println("*******************************************\n");
+		System.out.println(finalx+" is the mobile position in x\n");
+		System.out.println(finaly+" is the mobile position in y\n");
+		System.out.println("*******************************************\n");
+		
 	}		
 		
 }	

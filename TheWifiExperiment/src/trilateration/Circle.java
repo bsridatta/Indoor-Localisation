@@ -24,7 +24,7 @@ public class Circle  {
 			//c.x,c.y,c.r,c.r1 = Center and radius and modified radius of passed.circle.
 			
 	public boolean overlaps(Circle c){//input circle numbers
-		boolean intersects = Math.hypot(X-c.X, Y-c.Y) < (R1 + c.R);
+		boolean intersects = Math.hypot(X-c.X, Y-c.Y) < (R1 + c.R1);
 			//returns if it intersects or no...ii.e true is intersects orelse not
 			//hence true is overlaps 
 		return intersects;
@@ -32,7 +32,7 @@ public class Circle  {
 	
 	public boolean isInside(Circle c){//input circle numbers
 
-		if(Math.hypot(X-c.X, Y-c.Y) <= Math.abs(R - c.R)){
+		if(Math.hypot(X-c.X, Y-c.Y) <= Math.abs(R1 - c.R1)){
 				//inside one another
 			return true;
 		}
