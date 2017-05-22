@@ -1,11 +1,21 @@
 package trilateration;
 
+import java.awt.List;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Shark extends Circle{
 	
@@ -72,14 +82,114 @@ public class Shark extends Circle{
 
 	/*************************************************************************
 								THE MAIN FUNCTION
+	 * @throws IOException 
 	*************************************************************************/
 	
-	public static void main(String [] args){
+	public static void main(String [] args) throws IOException{
 		
 		//get the 3 best circles in decreasing order of radius
 		//pass array of their router numbers and distances
-		int [] routerNumber={1,2,3};
-		float [] radius = {10,10,10};
+		
+		float actualX=0;
+		float actualY=0;
+		float d1=0,d2=0,d3=0,d4=0,d5=0,d6=0,d7=0,d8=0;
+		/*************************************************************************
+							reading from csv
+ 		*************************************************************************/
+		
+		// open file input stream
+
+				BufferedReader reader = new BufferedReader(new FileReader(
+						"resources/Data.csv"));
+
+				// read file line by line
+				String line = null;
+				Scanner scanner = null;
+				int index = 0;
+				 reader.readLine();
+				 reader.readLine();
+				
+
+				 line = reader.readLine();
+					
+					scanner = new Scanner(line);
+					scanner.useDelimiter(",");
+					while (scanner.hasNext()) {
+						String data = scanner.next();
+																			//System.out.println(data);
+						if (index == 0)
+							actualX=Float.parseFloat(data);
+						else if (index == 1)
+							actualY=Float.parseFloat(data);
+						else if (index == 2)
+							d1=Float.parseFloat(data);
+						else if (index == 3)
+							d2=Float.parseFloat(data);
+						else if (index == 4)
+							d3=Float.parseFloat(data);
+						else if (index == 5)
+							d4=Float.parseFloat(data);
+						else if (index == 6)
+							d5=Float.parseFloat(data);
+						else if (index == 7)
+							d6=Float.parseFloat(data);
+						else if (index == 8)
+							d7=Float.parseFloat(data);
+						else if (index == 9)
+							d8=Float.parseFloat(data);
+						else{}
+										//System.out.println("invalid data::" + data);
+						index++;
+					}
+					index = 0;
+				
+				//close reader
+				reader.close();
+				System.out.println("actualX--->" + actualX);
+				System.out.println("actualY--->" + actualY);
+
+				//sort the distances
+				 Map<String, Float> map = new HashMap<String, Float>();
+				    map.put("1", d1);
+				    map.put("2", d2);
+				    map.put("3", d3);
+				    map.put("4", d4);
+				    map.put("5", d5);
+				    map.put("6", d6);
+				    map.put("7", d7);
+				    map.put("8", d8);
+				    
+				    Set<Entry<String, Float>> set = map.entrySet();
+				    ArrayList<Entry<String, Float>> list = new ArrayList<Entry<String, Float>>(set);
+				    Collections.sort( list, new Comparator<Map.Entry<String, Float>>()
+				    {
+				        public int compare( Map.Entry<String, Float> o1, Map.Entry<String, Float> o2 )
+				        {
+				            return (o1.getValue()).compareTo( o2.getValue() );//Ascending order
+				            //return (o2.getValue()).compareTo( o1.getValue() );//Descending order
+				        }
+				    } );
+				    for(Map.Entry<String, Float> entry:list){
+				        System.out.println("router"+entry.getKey()+" -> "+entry.getValue());
+				    }
+
+
+			
+
+		/*************************************************************************
+					retrieving info from config file
+ 		*************************************************************************/
+			        String [] routerNumber={
+			        		list.get(3).getKey(),
+			        		list.get(2).getKey(),
+			        		list.get(1).getKey()
+			        };
+					float [] radius = {
+			        		list.get(3).getValue(),
+			        		list.get(2).getValue(),
+			        		list.get(1).getValue()
+			        };
+			        
 		//retrieving info from config file
 		try {
 		    Properties props = new Properties();
@@ -87,8 +197,8 @@ public class Shark extends Circle{
 		    props.load(configFile);
 
 		    String host = props.getProperty("host");
-		    System.out.print("Host name is: " + host+"\n");
-		    
+		    									//System.out.print("Host name is: " + host+"\n");
+
 		    //for each router
 		    for(int i=0;i<3;i++){
 		    String input="router"+routerNumber[i];
@@ -104,9 +214,9 @@ public class Shark extends Circle{
 			
 		    configFile.close();
 		} catch (FileNotFoundException ex) {
-		    // file does not exist
+		    							// file does not exist
 		} catch (IOException ex) {
-		    // I/O error
+										// I/O error
 		}
 		
 		
@@ -160,6 +270,8 @@ public class Shark extends Circle{
 		/*************************************************************************
 								Location estimation
 		*************************************************************************/
+		System.out.println("****weight assignment initialised****\n");
+
 		float  W[] = new float[1000000] ;
 
 		float xWeight=0;
@@ -177,14 +289,14 @@ public class Shark extends Circle{
 				
 				//for each layer of circle
 				W[k]=(float) ((1/C[i].R)*(Math.exp(k/C[i].R)));//weight for layer points
-				System.out.println(W[k]);
+				System.out.print(W[k]);
 				
 				//for every point "j" on the varying circumference of radius "k"
 				//360 points on each layer
 				
 																																//point  j[] =new point[360]; 
 				int t=0;
-				for( t=0;t<=360;t++){
+				for( t=0;t<360;t++){
 					float x_co=(float) (C[i].X+k*Math.cos(t*3.14/180));
 					float y_co=(float) (C[i].Y+k*Math.sin(t*3.14/180));
 			
@@ -192,11 +304,10 @@ public class Shark extends Circle{
 					// point on the varying k
 																																//j[t].x=x_co;
 																																//j[t].y=y_co;
-					tWeight+=W[k];		//total weight denominator in finding the mean position	
-					xWeight+=W[k]*x_co;	//for weighted mean along x
-					yWeight+=W[k]*y_co;	//for weighted mean along y
+					//tWeight+=W[k];		//total weight denominator in finding the mean position	
+					//xWeight+=W[k]*x_co;	//for weighted mean along x
+					//yWeight+=W[k]*y_co;	//for weighted mean along y
 					
-																																//j[t].weight=W[k];
 					
 					//check if it lies inside other circles
 					if(C[(i+1)%3].hasPoint(x_co, y_co)||C[(i+2)%3].hasPoint(x_co, y_co)){
@@ -210,9 +321,9 @@ public class Shark extends Circle{
 						else{
 								//j[t].weight=Math.abs(j[t].weight-W[k]);
 //didnt understand the reason for taking absolute value
-							tWeight-=W[k];		//total weight denominator in finding the mean position	
-							xWeight-=W[k]*x_co;	//for weighted mean along x
-							yWeight-=W[k]*y_co;	//for weighted mean along y	
+							//tWeight-=W[k];		//total weight denominator in finding the mean position	
+							//xWeight-=W[k]*x_co;	//for weighted mean along x
+							//yWeight-=W[k]*y_co;	//for weighted mean along y	
 						
 						}
 					}
@@ -231,12 +342,16 @@ public class Shark extends Circle{
 			//for(float s:W){
 				//System.out.println(s);
 			//}
-				
+			System.out.println("\n");
+
 		}
+		
+		
 		float finalx=xWeight/tWeight;
 		float finaly=yWeight/tWeight;
 		
-		
+		System.out.println("\n");
+
 		System.out.println("*******************************************\n");
 		System.out.println(finalx+" is the mobile position in x\n");
 		System.out.println(finaly+" is the mobile position in y\n");
