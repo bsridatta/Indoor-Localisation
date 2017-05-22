@@ -10,10 +10,10 @@ public class Circle  {
 	public float X;	//corresponding x-co of center
 	public float Y;	//corresponding y-co of center
 
-	public Circle(int x, int y, float radius) {
+	public Circle(Float float1, Float float2, float radius) {
 		// TODO Auto-generated constructor stub
-		X=x;
-		Y=y;
+		X=float1;
+		Y=float2;
 		R=radius;
 		R1=radius;
 	}
@@ -54,7 +54,7 @@ public class Circle  {
 	public float delta(Circle c){
 		float delta = 0;
 		float pi=(float) 3.14;
-		float factor =(float) 0.1;//fraction of total area is determined by it
+		float factor =(float) 0.01;//fraction of total area is determined by it
 		delta=(float) (factor*(pi*R*R+pi*c.R*c.R));
 		
 		return delta;

@@ -13,18 +13,21 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Shark extends Circle{
 	
-	public Shark(int x, int y, int r) {
+	public Shark(float x, float y, float r) {
 		 super(x, y, r);				//dont want you right now !! sorry :(
 	}
 	 
 	 								//factor by which the radius is varied
 	static	float [] beta= new float [3];
+	
 									// C is an array of circles 
 									//obtained from available router RSSIs
 									//array of circles in decreasing order of radius
@@ -106,9 +109,33 @@ public class Shark extends Circle{
 				String line = null;
 				Scanner scanner = null;
 				int index = 0;
+				//no of these statements change the no.of row accessing
+				reader.readLine();
 				 reader.readLine();
 				 reader.readLine();
-				
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
+				 reader.readLine();
 
 				 line = reader.readLine();
 					
@@ -190,10 +217,12 @@ public class Shark extends Circle{
 			        		list.get(1).getValue()
 			        };
 			        
+			
+					
 		//retrieving info from config file
 		try {
 		    Properties props = new Properties();
-		    InputStream configFile=WALE.class.getClassLoader().getResourceAsStream("config.properties");		 
+		    InputStream configFile=Shark.class.getClassLoader().getResourceAsStream("config.properties");		 
 		    props.load(configFile);
 
 		    String host = props.getProperty("host");
@@ -205,7 +234,7 @@ public class Shark extends Circle{
 		    String routerLocation = props.getProperty(input);
 		    String [] routerCenter=routerLocation.split(",");
 		    System.out.print("router"+routerNumber[i]+" location in x:" + routerCenter[0]+" in y:" + routerCenter[1]+"\n");
-			C[i]=new Circle(Integer.valueOf(routerCenter[0]),Integer.valueOf(routerCenter[1]),radius[i]);
+			C[i]=new Circle(Float.valueOf(routerCenter[0]),Float.valueOf(routerCenter[1]),(float)radius[i]);
 			//one circle created
 		    }
 			
@@ -219,19 +248,20 @@ public class Shark extends Circle{
 										// I/O error
 		}
 		
-		
-		
-			
-		
-		
-		//beta estimation
-			//as we know c[0].R > c[1].R
-			//C[0].R:C[1].R:C[2].R :: C[0].R/C[2].R:C[1].R/C[2].R:1
-		
+							//beta estimation
+							//as we know c[0].R > c[1].R
+							//C[0].R:C[1].R:C[2].R :: C[0].R/C[2].R:C[1].R/C[2].R:1
+		/*
 		beta[0]=C[0].R/C[2].R;
 		beta[1]=C[1].R/C[2].R;
 		beta[2]=1;
-				
+			*/	
+	
+		beta[0]=(C[0].R/C[2].R)*(float)0.01;
+		beta[1]=C[1].R/C[2].R*(float)0.01;
+		beta[2]=1*(float)0.01;
+	
+		
 	/*************************************************************************
 							Distance re-estimation
 	*************************************************************************/
