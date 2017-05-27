@@ -2,13 +2,26 @@ package trilateration;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+import trilateration.QueueArray;
 
+/**
+ * @author sridatta
+ *
+ */
 public class Circle  {
 
+	public float beta;
 	public float R;	//corresponding radii
 	public float R1;	//corresponding MODIFIED radii
 	public float X;	//corresponding x-co of center
 	public float Y;	//corresponding y-co of center
+	
+	//Assuming filled circle intersection 
+	//(i.e : One circle inside another is an intersection).
+	//x,y,r,r1 = Center and radius and modified radius of this.circle.
+	//c.x,c.y,c.r,c.r1 = Center and radius and modified radius of passed.circle.
 
 	public Circle(Float float1, Float float2, float radius) {
 		// TODO Auto-generated constructor stub
@@ -17,12 +30,11 @@ public class Circle  {
 		R=radius;
 		R1=radius;
 	}
-			
-			//Assuming filled circle intersection 
-			//(i.e : One circle inside another is an intersection).
-			//x,y,r,r1 = Center and radius and modified radius of this.circle.
-			//c.x,c.y,c.r,c.r1 = Center and radius and modified radius of passed.circle.
-			
+
+	public Circle() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public boolean overlaps(Circle c){//input circle numbers
 		boolean intersects = Math.hypot(X-c.X, Y-c.Y) < (R1 + c.R1);
 			//returns if it intersects or no...ii.e true is intersects orelse not
@@ -47,11 +59,10 @@ public class Circle  {
 		else{
 			return false;
 		}
-		
 	}
 	
-	//it returns 10 percent of the total area of the 2 circles in the view
-	public float delta(Circle c){
+	public float delta(Circle c){//it returns 10 percent of the total area of the 2 circles in the view
+	
 		float delta = 0;
 		float pi=(float) 3.14;
 		float factor =(float) 0.01;//fraction of total area is determined by it
@@ -79,4 +90,6 @@ public class Circle  {
 		float intersectionArea = part1 + part2 - part3;
 		return intersectionArea;
 	}
+
+
 }
