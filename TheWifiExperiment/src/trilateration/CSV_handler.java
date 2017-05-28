@@ -2,8 +2,10 @@ package trilateration;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,9 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Map.Entry;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+
 import trilateration.Location;
 
 
@@ -91,13 +96,9 @@ public class CSV_handler {
 		    	}
 		    }
 		    //till here loc  is just as it was passed just with the best results added to best router and radius arrays
-		
 		   //loc now has the sorted routers hence get the sorted centers as well
-		    
-	
 		    return 	getSortedCenters(loc);
 	}
-	
 	
 	public Location getSortedCenters(Location loc) {
 		//retrieving info from configuration file
@@ -109,11 +110,7 @@ public class CSV_handler {
 			for(int i=0;i<8;i++){
 				String input="router"+loc.getSortedRouterNumbers(i);
 				String routerCenters = props.getProperty(input);
-				//System.out.println("*************************");
-				//System.out.println(routerCenters);
-				
 				if(routerCenters==null){
-					
 					loc.setSortedCenterX(0, i);
 					loc.setSortedCenterY(0, i);	
 				}
@@ -122,7 +119,6 @@ public class CSV_handler {
 				//System.out.print("router"+routerNumber[i]+" location in x:" + routerCenter[0]+" in y:" + routerCenter[1]+"\n");
 				loc.setSortedCenterX(Float.parseFloat(routerCenter[0]), i);
 				loc.setSortedCenterY(Float.parseFloat(routerCenter[1]), i);	
-				
 				}
 			}
 			configFile.close();
@@ -133,16 +129,5 @@ public class CSV_handler {
 		}			
 		return loc;
 	}
-	
 	//error possible where the sorted array may not be full because of 0 values...
-	
-	
 }
-
-
-
-
-
-
-
-

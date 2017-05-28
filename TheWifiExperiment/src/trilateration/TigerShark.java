@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,11 +39,8 @@ public class TigerShark {
 		//the complete data required for the procedure is in Locs.. enjoy :)
 		int check=1;
 		for(Location location: Locs){//for all rows in the excel file / csv / for all positions
-			
 			System.out.println("");
-			if(check==50){
-				continue;
-			}
+			
 			System.out.println("results for position "+check++);
 			int n = 3;
 			Circle cir[]=new Circle[n];
@@ -128,18 +126,33 @@ public class TigerShark {
 			}
 			location.setExperimentalX(xWeight/tWeight);
 			location.setExperimentalY(yWeight/tWeight);
-			
 			System.out.println("Original   :"+location.getActualX()+","+location.getActualY() );
 			System.out.println("Experimental :"+location.getExperimentalX()+","+location.getExperimentalY() );
-			
 		}
-		float errorX = 0,errorY=0;
+		float TotalErrorX = 0,TotalErrorY=0;
+		int z=1;
 		for(Location location: Locs){//for all rows in the excel file / csv / for all positions
-			errorX=errorX+Math.abs(location.getExperimentalX()-location.getActualX());
-			errorY=errorY+Math.abs(location.getExperimentalY()-location.getActualY());
-		}
-	System.out.println("average error in x is "+errorX/Locs.size());
-	System.out.println("average error in y is "+errorY/Locs.size());
+			if(z>85){
+				continue;
+			}
+			location.setErrorX(Math.abs(location.getExperimentalX()-location.getActualX()));
+			location.setErrorY(Math.abs(location.getExperimentalY()-location.getActualY()));
 
+			TotalErrorX=TotalErrorX+location.getErrorX();
+			TotalErrorY=TotalErrorY+location.getErrorY();
+		}
+		float AvgErrorX=0;
+		float AvgErrorY=0;
+		AvgErrorX=TotalErrorX/Locs.size();
+		AvgErrorY=TotalErrorY/Locs.size();
+		
+	System.out.println("average error in x is "+AvgErrorX);
+	System.out.println("average error in y is "+AvgErrorY);
+	CSV_writer csvWriter=new CSV_writer();
+	csvWriter.save(Locs,AvgErrorX,AvgErrorY);
+	
+
+
+	
 	}
 }

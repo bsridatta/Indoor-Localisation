@@ -13,8 +13,22 @@ public class Location {
 	float [] sortedCenterY=new float[8];
 	float experimentalX=0;
 	float experimentalY=0;
+	float errorX=0;
+	float errorY=0;
+
 	
-	
+	public float getErrorX() {
+		return errorX;
+	}
+	public void setErrorX(float errorX) {
+		this.errorX = errorX;
+	}
+	public float getErrorY() {
+		return errorY;
+	}
+	public void setErrorY(float errorY) {
+		this.errorY = errorY;
+	}
 	public float getExperimentalX() {
 		return experimentalX;
 	}
