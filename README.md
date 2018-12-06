@@ -1,4 +1,7 @@
-# Indoor-Localisation
+# Indoor-Localisation 
+
+# RSS based Dynamic Circle Expansion
+# Little code that I can put out! 
 
 ```
 Indoor-Localisation
@@ -20,5 +23,5 @@ Indoor-Localisation
             ├── QueueArray.java
             ├── QueueIntf.java
             └── TigerShark.java
-
 ```
+
