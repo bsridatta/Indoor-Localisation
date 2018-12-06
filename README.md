@@ -1,6 +1,6 @@
 # Indoor-Localisation
 
-```bash
+```
 Indoor-Localisation
 
 └── TheWifiExperiment
