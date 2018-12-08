@@ -1,7 +1,7 @@
 # Indoor-Localisation 
 
-# RSS based Dynamic Circle Expansion
-# Little code that I can put out! 
+### RSS based Dynamic Circle Expansion
+> Major part of the code is in a private repository. This is the Little code that I can put out! 
 
 ```
 Indoor-Localisation
